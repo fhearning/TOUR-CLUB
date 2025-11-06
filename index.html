@@ -1359,8 +1359,7 @@
     <header class="app-header">
         <div class="header-left">
             <button class="header-back-button" id="headerBackBtnEl"><i class="bi bi-arrow-left"></i></button>
-            <!-- === LOGO LINK UPDATED HERE === -->
-            <img src="https://i.ibb.co.com/pvH56j7Z/IMG-20251105-130126-419.jpg" alt="Logo" class="header-logo"
+            <img src="https://via.placeholder.com/40/FFFFFF/0F172A?text=G" alt="Logo" class="header-logo"
                 id="appLogoEl">
             <div class="header-title" id="headerTitleContainerEl"> Welcome <span id="headerUserGreetingEl">Guest</span>
             </div>
@@ -1963,25 +1962,6 @@
             </div>
         </div>
     </div>
-	
-    <!-- *** NEW: POPUP NOTICE MODAL *** -->
-    <div class="modal fade" id="popupNoticeModalEl" tabindex="-1" aria-labelledby="popupNoticeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="popupNoticeModalLabel">Notice</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="popupNoticeModalBodyEl" style="white-space: pre-wrap;">
-                    <!-- Notice content will be loaded here by JS -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-custom btn-custom-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- NEW: Edit Profile Modal -->
     <div class="modal fade" id="editProfileModalEl" tabindex="-1" aria-labelledby="editProfileModalLabel"
@@ -2136,10 +2116,6 @@
             matchDetailsModalInstance: getElement('matchDetailsModalEl') ? new bootstrap.Modal(getElement('matchDetailsModalEl')) : null, matchDetailsModalTitle: getElement('matchDetailsModalTitleEl'), matchDetailsModalBody: getElement('matchDetailsModalBodyEl'),
             idPasswordModalInstance: getElement('idPasswordModalEl') ? new bootstrap.Modal(getElement('idPasswordModalEl')) : null, roomIdDisplay: getElement('roomIdDisplayEl'), roomPasswordDisplay: getElement('roomPasswordDisplayEl'),
             securityWarning: getElement('securityWarning'),
-			
-            // *** NEW: Popup Notice Modal elements ***
-            popupNoticeModalInstance: getElement('popupNoticeModalEl') ? new bootstrap.Modal(getElement('popupNoticeModalEl')) : null,
-            popupNoticeModalBody: getElement('popupNoticeModalBodyEl'),
 
             // NEW: Match Type Selection Modal elements
             playerModeSelectionModalInstance: getElement('playerModeSelectionModalEl') ? new bootstrap.Modal(getElement('playerModeSelectionModalEl')) : null,
@@ -2183,7 +2159,6 @@
         let currentUser = null; let userProfile = {}; let currentSectionId = 'login-section'; let dbListeners = {};
         let swiperInstance; let currentTournamentGameId = null; let appSettings = {};
         let validReferrerUid = null;
-        let sessionNoticeShown = false; // *** NEW: Prevents showing notice on every section change ***
         let pendingJoinTournament = {
             tId: null,
             feePerPlayer: 0,
@@ -2434,26 +2409,6 @@
             elements.emailLoginForm.reset();
             elements.emailSignupForm.reset();
         }
-        
-        // *** NEW: Function to show the popup notice ***
-        function showPopupNotice() {
-            if (sessionNoticeShown || !appSettings.popupNotice || !appSettings.popupNotice.enabled) {
-                console.log("Popup notice will not be shown (already shown, disabled, or no content).");
-                return;
-            }
-
-            const noticeContent = appSettings.popupNotice.content;
-            if (noticeContent && noticeContent.trim() !== '') {
-                console.log("Showing popup notice.");
-                if (elements.popupNoticeModalBody) {
-                    elements.popupNoticeModalBody.textContent = noticeContent;
-                }
-                if (elements.popupNoticeModalInstance) {
-                    elements.popupNoticeModalInstance.show();
-                }
-                sessionNoticeShown = true; // Mark as shown for this session
-            }
-        }
 
         // --- Firebase Auth Functions ---
         async function signUpWithEmail() {
@@ -2686,9 +2641,8 @@
                     console.log("App Settings Updated (Real-time):", appSettings);
 
                     applyTheme(appSettings.theme || null);
-                    
-                    // === LOGO UPDATE CODE COMMENTED OUT HERE ===
-                    // if (appSettings.logoUrl && elements.appLogo) elements.appLogo.src = appSettings.logoUrl;
+
+                    if (appSettings.logoUrl && elements.appLogo) elements.appLogo.src = appSettings.logoUrl;
 
                     if (elements.withdrawRulesDisplay) {
                         elements.withdrawRulesDisplay.innerHTML = appSettings.policyWithdrawal || '<p class="text-secondary text-center">টাকা তোলার কোনো নিয়মাবলী সেট করা হয়নি।</p>';
@@ -2700,10 +2654,6 @@
                     // Update Withdraw Page dynamic values immediately
                     if (currentSectionId === 'withdraw-section') {
                         initWithdrawPageHardcoded();
-                    }
-                    // *** NEW: Check if popup notice should be shown after settings are loaded ***
-                    if (currentUser) {
-                        showPopupNotice();
                     }
 
                 } else {
