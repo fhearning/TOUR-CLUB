@@ -3223,10 +3223,7 @@
 
                 if (tournamentMatchType === 'solo') {
                     pendingJoinTournament.playerChosenMatchType = 'solo';
-                    // === FIX START ===
-                    // The typo 'pendingJoinJoinTournament' is corrected to 'pendingJoinTournament'
                     pendingJoinTournament.totalCalculatedFee = feePerPlayer * 1;
-                    // === FIX END ===
                     showGameIdInputModal();
                 } else {
                     showPlayerModeSelectionModal();
@@ -3617,10 +3614,7 @@
 
             const form = e.target;
             const amountInput = form.querySelector('input[type="number"]');
-            // === FIX START ===
-            // The 'amount' variable was not declared. It is now correctly parsed from the amountInput.
             const amount = parseFloat(amountInput.value);
-            // === FIX END ===
             const transactionId = form.querySelector('input[type="text"]').value.trim();
             const method = form.dataset.method;
             const minDeposit = appSettings.depositSettings?.minDepositAmount || depositConfig.minDepositAmount;
@@ -3894,6 +3888,9 @@
 
             // Adding submit listeners to deposit forms
             elements.depositForms.forEach(form => form.addEventListener('submit', submitDepositFormHandler));
+            
+            // **** FIX: ADDING THE MISSING EVENT LISTENER FOR WITHDRAWAL FORMS ****
+            elements.withdrawForms.forEach(form => form.addEventListener('submit', submitWithdrawFormHandler));
 
             setupTabSwitching('depositPaymentTabsContainer', '#deposit-section .tab-content');
             setupTabSwitching('withdrawPaymentTabsContainer', '#withdraw-section .tab-content');
